@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # TACACS+ Docker deployment script
 # Server IP: 172.16.10.241 (interface ens2)
 # Syslog server: 172.16.10.118:514
