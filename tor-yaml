@@ -1,11 +1,6 @@
 services:
   tor-client:
     image: nicholasjackson/fake-service:v0.7.1
-    logging:
-      driver: syslog
-      options:
-        syslog-address: "udp://172.16.10.118:514"
-        tag: "tor-client"
     environment:
       - LISTEN_ADDR=0.0.0.0:9090
       - NAME=tor-client
@@ -16,15 +11,16 @@ services:
       - HTTP_CLIENT_KEEP_ALIVES=false
     ports:
       - "192.168.110.10:9090:9090"
-    # Remove network_mode: host
-    # Remove extra_hosts
 
   jaeger:
     image: jaegertracing/all-in-one:latest
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "udp://172.16.10.118:514"
+        tag: "jaeger"
     environment:
       - COLLECTOR_ZIPKIN_HOST_PORT=:9411
     ports:
       - "192.168.110.10:16686:16686"
       - "192.168.110.10:9411:9411"
-    # Remove network_mode: host
-    # Remove extra_hosts
