@@ -1,6 +1,6 @@
 services:
   tor-client:
-    image: nicholasjackson/fake-service:latest
+    image: nicholasjackson/fake-service:v0.7.1
     environment:
       - LISTEN_ADDR=0.0.0.0:9090
       - NAME=tor-client
