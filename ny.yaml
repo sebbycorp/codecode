@@ -1,6 +1,6 @@
 services:
   ny-server-api:
-    image: nicholasjackson/fake-service:latest
+    image: nicholasjackson/fake-service:v0.7.1
     environment:
       - LISTEN_ADDR=0.0.0.0:9090
       - NAME=ny-server-api
@@ -12,6 +12,3 @@ services:
       - SERVER_TYPE=grpc
     ports:
       - "192.168.10.10:9090:9090"
-    network_mode: host
-    extra_hosts:
-      - "host.docker.internal:192.168.10.10"
