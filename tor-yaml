@@ -11,6 +11,7 @@ services:
       - HTTP_CLIENT_KEEP_ALIVES=false
     ports:
       - "192.168.110.10:9090:9090"
+
   jaeger:
     image: jaegertracing/all-in-one:latest
     logging:
