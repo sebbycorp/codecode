@@ -8,8 +8,8 @@
 set -e
 
 # Variables
-CONFIG_DIR="$HOME/tacacs-ng/etc"
-LOG_DIR="$HOME/tacacs-ng/log"
+CONFIG_DIR="/home/$USER/tacacs-ng/etc"
+LOG_DIR="/home/$USER/tacacs-ng/log"
 CONFIG_FILE="$CONFIG_DIR/tac_plus-ng.cfg"
 SYSLOG_IP="172.16.10.118"
 SYSLOG_PORT="514"
@@ -37,13 +37,14 @@ fi
 # Step 2: Create directories
 echo "Creating directories for configuration and logs..."
 mkdir -p "$CONFIG_DIR" "$LOG_DIR"
+chmod 700 "$CONFIG_DIR" "$LOG_DIR"
 
 # Step 3: Verify and create config file
 if [ -d "$CONFIG_FILE" ]; then
     echo "Error: $CONFIG_FILE is a directory. Removing it..."
     rm -rf "$CONFIG_FILE"
 elif [ -f "$CONFIG_FILE" ]; then
-    echo "Config file $CONFIG_FILE exists."
+    echo "Config file $CONFIG_FILE exists. Overwriting..."
 else
     echo "Config file $CONFIG_FILE does not exist. Creating it..."
 fi
@@ -57,17 +58,15 @@ default accounting { permit = all }
 
 # Logging setup: Define a log group for remote syslog
 log syslog-remote {
-    destination = 172.16.10.118:514  # Remote UDP syslog server
-    syslog facility = AUTH           # Syslog facility
-    syslog level = INFO             # Log level (INFO captures auth and acct events)
-    syslog ident = tac_plus-ng      # Identifier in syslog messages
-    timestamp = RFC3164             # Timestamp format for syslog
+    destination = 172.16.10.118:514
+    syslog facility = AUTH
+    syslog level = INFO
+    syslog ident = tac_plus-ng
+    timestamp = RFC3164
 }
 
-# Apply remote syslog to authentication logs (successful/failed logins)
+# Apply remote syslog to authentication and accounting logs
 authentication log = syslog-remote
-
-# Apply remote syslog to accounting logs (commands and session events)
 accounting log = syslog-remote
 
 # Optional: Local logging for debugging
@@ -80,7 +79,7 @@ log local-auth {
 # Server listener
 id = tac_plus {
     listen = { port = 49 }
-    key = "mysecret"  # Shared secret for Cisco/Arista
+    key = "mysecret"
 }
 
 # Simple local user for testing
@@ -91,7 +90,7 @@ group = admin {
 
 user = admin {
     member = admin
-    login = cleartext "secret123"  # Plaintext password (use crypt for production)
+    login = cleartext "secret123"
 }
 EOF
 
@@ -114,8 +113,8 @@ fi
 echo "Starting tac_plus-ng container..."
 docker run --name "$CONTAINER_NAME" \
     -p 49:49/udp \
-    -v "$(realpath $CONFIG_DIR)/tac_plus-ng.cfg:/usr/local/etc/tac_plus-ng.cfg:ro" \
-    -v "$(realpath $LOG_DIR):/var/log" \
+    -v "$CONFIG_FILE:/usr/local/etc/tac_plus-ng.cfg:ro" \
+    -v "$LOG_DIR:/var/log" \
     -d --restart=always \
     christianbecker/tac_plus-ng
 
