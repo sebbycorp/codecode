@@ -1,0 +1,27 @@
+services:
+  tor-client:
+    image: nicholasjackson/fake-service:latest
+    environment:
+      - LISTEN_ADDR=0.0.0.0:9090
+      - NAME=tor-client
+      - MESSAGE=Client response
+      - UPSTREAM_URIS=grpc://192.168.10.10:9090
+      - UPSTREAM_WORKERS=1
+      - TRACING_ZIPKIN=http://192.168.110.10:9411
+      - HTTP_CLIENT_KEEP_ALIVES=false
+    ports:
+      - "192.168.110.10:9090:9090"
+    network_mode: host
+    extra_hosts:
+      - "host.docker.internal:192.168.110.10"
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    environment:
+      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
+    ports:
+      - "192.168.110.10:16686:16686"
+      - "192.168.110.10:9411:9411"
+    network_mode: host
+    extra_hosts:
+      - "host.docker.internal:192.168.110.10"
