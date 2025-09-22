@@ -1,6 +1,6 @@
 services:
   tx-server-database:
-    image: nicholasjackson/fake-service:latest
+    image: nicholasjackson/fake-service:v0.7.1
     environment:
       - LISTEN_ADDR=0.0.0.0:9090
       - NAME=tx-server-database
@@ -9,6 +9,3 @@ services:
       - HTTP_CLIENT_KEEP_ALIVES=false
     ports:
       - "192.168.30.10:9090:9090"
-    network_mode: host
-    extra_hosts:
-      - "host.docker.internal:192.168.30.10"
