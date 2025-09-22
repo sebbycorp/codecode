@@ -2,6 +2,7 @@
 # TACACS+ Docker deployment script
 # Server IP: 172.16.10.241 (interface ens2)
 # Syslog server: 172.16.10.118:514
+# Using rickronen/tac-plus image
 
 # Exit on errors
 set -e
@@ -138,8 +139,8 @@ if [ "$(sudo docker ps -aq -f name="$CONTAINER_NAME")" ]; then
 fi
 
 # Step 4: Pull Docker image
-echo "Pulling TACACS+ Docker image..."
-sudo docker pull fbotha/tac_plus
+echo "Pulling TACACS+ Docker image (rickronen/tac-plus)..."
+sudo docker pull rickronen/tac-plus
 
 # Step 5: Run the container
 echo "Starting TACACS+ container..."
@@ -148,7 +149,7 @@ sudo docker run --name "$CONTAINER_NAME" \
     -v "$CONFIG_FILE:/etc/tac_plus/tac_plus.conf:ro" \
     -v "$LOG_DIR:/var/log/tac_plus" \
     -d --restart=always \
-    fbotha/tac_plus
+    rickronen/tac-plus
 
 # Step 6: Verify deployment
 sleep 3
