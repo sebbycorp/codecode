@@ -38,8 +38,17 @@ fi
 echo "Creating directories for configuration and logs..."
 mkdir -p "$CONFIG_DIR" "$LOG_DIR"
 
-# Step 3: Create tac_plus-ng configuration file
-echo "Creating configuration file at $CONFIG_FILE..."
+# Step 3: Verify and create config file
+if [ -d "$CONFIG_FILE" ]; then
+    echo "Error: $CONFIG_FILE is a directory. Removing it..."
+    rm -rf "$CONFIG_FILE"
+elif [ -f "$CONFIG_FILE" ]; then
+    echo "Config file $CONFIG_FILE exists."
+else
+    echo "Config file $CONFIG_FILE does not exist. Creating it..."
+fi
+
+# Create or overwrite config file
 cat > "$CONFIG_FILE" << 'EOF'
 # Global defaults
 default authentication { permit = all }
@@ -63,9 +72,7 @@ accounting log = syslog-remote
 
 # Optional: Local logging for debugging
 log local-auth {
-    destination = "/var卓
-
-System: /var/log/tac_plus-ng/auth.log"
+    destination = "/var/log/tac_plus-ng/auth.log"
 }
 # authentication log = local-auth  # Uncomment to enable local auth logging
 # accounting log = local-auth      # Uncomment to enable local acct logging
@@ -96,7 +103,7 @@ echo "Configuration file created and secured."
 echo "Pulling tac_plus-ng Docker image..."
 docker pull christianbecker/tac_plus-ng
 
-# Step 5: Stop and remove any existing container with the same name
+# Step 5: Stop and remove any existing container
 if [ "$(docker ps -aq -f name="$CONTAINER_NAME")" ]; then
     echo "Stopping and removing existing $CONTAINER_NAME container..."
     docker stop "$CONTAINER_NAME" || true
@@ -107,8 +114,8 @@ fi
 echo "Starting tac_plus-ng container..."
 docker run --name "$CONTAINER_NAME" \
     -p 49:49/udp \
-    -v "$(pwd)/etc/tac_plus-ng.cfg:/usr/local/etc/tac_plus-ng.cfg:ro" \
-    -v "$(pwd)/log:/var/log" \
+    -v "$(realpath $CONFIG_DIR)/tac_plus-ng.cfg:/usr/local/etc/tac_plus-ng.cfg:ro" \
+    -v "$(realpath $LOG_DIR):/var/log" \
     -d --restart=always \
     christianbecker/tac_plus-ng
 
