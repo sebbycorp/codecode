@@ -57,7 +57,6 @@ accounting syslog {
     level info
 }
 
-# Admin user with full privileges
 user = admin {
     login = cleartext "secret123"
     service = shell {
@@ -66,7 +65,6 @@ user = admin {
     }
 }
 
-# Additional user with full privileges
 user = cisco {
     login = cleartext "cisco123"
     service = shell {
