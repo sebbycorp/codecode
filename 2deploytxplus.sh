@@ -1,6 +1,6 @@
 #!/bin/bash
 # TACACS+ Docker deployment script
-# Server IP: 172.16.10.241 (interface ens2)
+# Server IP: 172.16.10.118 (interface ens2)
 # Syslog server: 172.16.10.118:514
 # Using rickronen/tac-plus:1.0 image
 
@@ -11,7 +11,7 @@ set -e
 CONFIG_DIR="$HOME/tacacs-ng/etc"
 LOG_DIR="$HOME/tacacs-ng/log"
 CONFIG_FILE="$CONFIG_DIR/tac_plus.conf"
-TACACS_SERVER_IP="172.16.10.241"
+TACACS_SERVER_IP="172.16.10.118"
 SYSLOG_IP="172.16.10.118"
 SYSLOG_PORT="514"
 CONTAINER_NAME="tacacs-ng"
