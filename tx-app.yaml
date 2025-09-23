@@ -8,4 +8,4 @@ services:
       - TRACING_ZIPKIN=http://192.168.110.10:9411
       - HTTP_CLIENT_KEEP_ALIVES=false
     ports:
-      - "192.168.30.10:9090:9090"
+      - "192.168.130.10:9090:9090"
